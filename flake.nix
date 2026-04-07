@@ -1,7 +1,6 @@
 {
   description = ''
-    An easy enterprise grade host management solution.
-    designed for use with colmena
+    A flake-parts module for managing hosts & user configurations automatically. 
   '';
 
   inputs = {
@@ -11,6 +10,6 @@
 
   outputs = inputs@{ flake-parts, ... }:
   flake-parts.lib.mkFlake { inherit inputs; } ({ ... }: {
-    flake.flakeModules.default = ./flake-module.nix;
+    flake.flakeModules.default = ./flake-modules/hostess.nix;
   });
 }
