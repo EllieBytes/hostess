@@ -34,7 +34,8 @@ in {
     modulesDir = mkPathOption "Path to the global modules directory. this will be searched for global modules.";
     homeModulesDir = mkPathOption "Path to the global home modules directory. this will be searched for global home modules.";
     profilesDir = mkPathOption "Path to the global profiles directory. This will be searched for global profiles.";
- 
+    homeProfilesDir = mkPathOption "Path to the global home profiles directory. This will be searched for global home profiles.";
+
     nixpkgs = mkOption {
       type = types.raw;
       description = "Injected nixpkgs input used to build hosts.";
