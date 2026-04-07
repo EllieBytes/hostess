@@ -119,15 +119,28 @@ in {
       safeImport = path: default:
         if pathExists path then import path else default;
 
+      fileOrDirectory = modulesDir: name:
+        if pathExists (modulesDir + "/${name}") then
+        (modulesDir + "/${name}/default.nix")
+        else (modulesDir + "/${name}.nix");
+
       resolveModule = modulesDir: name:
-        let p = modulesDir + "/${name}.nix"; in
+        let p = (fileOrDirectory modulesDir name); in
         if pathExists p then p
         else throw "hostess: Couldn't find module ${name} at ${p}";
 
       resolveProfile = profilesDir: name:
-        let p = profilesDir + "/${name}.nix"; in
+        let p = (fileOrDirectory profilesDir name); in
         if pathExists p then p
         else throw "hostess: Couldn't find profile ${name} at ${p}";
+
+      hostessLib = cfg.nixpkgs.lib.extend (import ../lib/default.nix {
+        inherit cfg;
+      });
+
+      hostessLibHome = cfg.nixpkgs.lib.extend (import ../lib/home.nix {
+        inherit cfg;
+      });
        
       buildHost = hostname:
         let
@@ -219,12 +232,14 @@ in {
         ++ rawProfiles
         ++ cfg.commonNixosModules
         ++ hmModule
+        ++ (safeImport (hostDir + "/disk.nix") {})  # disko config.
         ++ [
           metadataModule
           (hostDir + "/default.nix")
         ];
       specialArgs = {
         inherit inputs;
+        lib = hostessLib;
         hostMeta = meta.meta or {};
       };
     };
@@ -280,12 +295,13 @@ in {
 
           extraSpecialArgs = {
             inherit inputs;
+            lib = hostessLibHome;
             userMeta = meta.meta or {};
           };
         };
 
       hostNames = subdirs cfg.hostsDir;
-      userNames = if pathExists cfg.homeDir then subdirs cfg.homeDir else [];
+      userNames = if (pathExists cfg.homeDir) && !(isNull cfg.homeDir) then subdirs cfg.homeDir else [];
       
       nixosConfigurations = builtins.listToAttrs (map (name: {
         inherit name;
