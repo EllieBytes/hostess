@@ -140,7 +140,7 @@ in {
             profiles = [];
             rawModules = [];
             rawProfiles = [];
-            meta = [];
+            meta = {};
           };
 
           system = meta.system or "x86_64-linux";
