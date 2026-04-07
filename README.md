@@ -1,6 +1,6 @@
 # Hostess
 
-hostess is a flake-parts module designed for use with colmena.
+hostess is a flake-parts module designed for easy host management.
 
 ## Example
 
@@ -11,8 +11,29 @@ hostess is a flake-parts module designed for use with colmena.
   imports = [ hostess.flakeModules.default ];
 
   hostess = {
+    nixpkgs = inputs.nixpkgs;
+    home-manager = inputs.home-manager;
+
+    # Scanned for host configs.
     hostsDir = ./hosts;
+    # Scanned for home-manager configs.
     usersDir = ./users;
+    # Scanned for NixOS modules
+    modulesDir = ./modules/nixos;
+    # Scanned for NixOS profiles
+    profilesDir = ./profiles/nixos;
+    # Scanned for HM modules
+    homeModulesDir = ./modules/home;
+    # Scanned for HM profiles
+    homeProfilesDir = ./profiles/home;
+    # NixOS modules to apply to all hosts.
+    commonNixosModules = [ ./profiles/nixos/base.nix ];
+
+    perTagRules = {
+      server = {
+        profiles = [ "base/server" ];
+      };
+    };
   };
 # ...
 ```
@@ -23,12 +44,7 @@ hostess is a flake-parts module designed for use with colmena.
 { ... }:
 
 {
-  targetHost = "10.42.0.6";
-  targetUser = "root";
+  modules = [ "software/jellyfin" ];
   tags = [ "server" ];
 }
 ```
-
-Deploy with `colmena apply --at @server` to apply to 'myhost' and every host on the network under the tag 'server'.
-
-Rules can also be applied to tags via `hostess.perTag`
