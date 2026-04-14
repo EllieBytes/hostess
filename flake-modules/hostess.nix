@@ -47,6 +47,12 @@ in {
       description = "Injected home-manager input used to build home-manager configs";
     };
 
+    disko = mkOption {
+      type = types.nullOr types.raw;
+      default = null;
+      description = "Injected disko input used for merging disko configs into host configs";
+    };
+
     commonNixosModules = mkOption {
       type = types.listOf types.deferredModule;
       default = [];
@@ -154,6 +160,7 @@ in {
             rawModules = [];
             rawProfiles = [];
             meta = {};
+            home-manager = {};
           };
 
           system = meta.system or "x86_64-linux";
@@ -173,8 +180,25 @@ in {
           rawModules = meta.rawModules or [];
           rawProfiles = meta.rawModules or [];
 
-          tagModulesList = builtins.concatLists (map (tag: cfg.perTagRules."${tag}".modules or []) (meta.tags or []));
-          tagProfilesList = builtins.concatLists (map (tag: cfg.perTagRules."${tag}".modules or []) (meta.tags or []));
+          tagRules = map (tag: cfg.perTagRules."${tag}" or { 
+            extraSpecialArgs = {}; 
+            modules          = [];
+            rawModules       = [];
+            profiles         = [];
+            rawProfiles      = [];
+          }) (meta.tags or []);
+
+          tagModulesList = builtins.concatLists (map (rule: rule.modules or []) tagRules);
+          tagProfilesList = builtins.concatLists (map (rule: rule.profiles or []) tagRules);
+          tagRawModules = builtins.concatLists (map (rule: rule.rawModules or []) tagRules);
+          tagRawProfiles = builtins.concatLists (map (rule: rule.rawProfiles or []) tagRules);
+
+
+          tagModulesResolved = map (mod: hostessLib.resolveModule "${mod}") tagModulesList;
+          tagProfilesResolved = map (mod: hostessLib.resolveProfile "${mod}") tagProfilesList;
+
+          tagModulesFinal = tagModulesResolved ++ tagRawModules;
+          tagProfilesFinal = tagProfilesResolved ++ tagRawProfiles;
 
           hmConfig = meta.home-manager or {};
           hmEnabled = (hmConfig.enable or false) && !(isNull cfg.home-manager);
@@ -189,11 +213,11 @@ in {
                 let
                   userDir = cfg.homeDir + "/user";
                   userMeta = safeImport (userDir + "/meta.nix") {
-                    modules  = [];
-                    profiles = [];
-                    rawModules = [];
+                    modules     = [];
+                    profiles    = [];
+                    rawModules  = [];
                     rawProfiles = [];
-                    meta     = {};
+                    meta        = {};
                   };
 
                   homeCommon = optional
@@ -204,6 +228,11 @@ in {
                 in {
                 name = user;
                 value = { ... }: {
+                  extraSepcialArgs = {
+                    inherit inputs;
+                    meta = meta.home-manager.meta;
+                  };
+
                   imports = 
                     homeCommon
                     ++ homeNamed
@@ -218,6 +247,8 @@ in {
           }
         ];
 
+      diskoOk = (!isNull cfg.disko) && (pathExists (hostDir + "/disk.nix"));
+
       metadataModule = {
         _module.args.hostMeta = meta.meta or {};
         networking.hostName = lib.mkDefault hostname;
@@ -230,9 +261,18 @@ in {
         ++ rawModules
         ++ namedProfiles
         ++ rawProfiles
+        ++ tagModulesFinal
+        ++ tagProfilesFinal
         ++ cfg.commonNixosModules
         ++ hmModule
-        ++ (safeImport (hostDir + "/disk.nix") {})  # disko config.
+        ++ (
+          if diskoOk then [
+            cfg.disko.nixosModules.disko
+            (safeImport (hostDir + "/disk.nix") {})
+          ]
+          else if (pathExists (hostDir + "/disk.nix")) then 
+            builtins.warn "Host ${hostname} has a disko config, but disko was never given to Hostess. not configuring disko" []
+          else [])
         ++ [
           metadataModule
           (hostDir + "/default.nix")
