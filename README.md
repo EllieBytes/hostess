@@ -2,6 +2,9 @@
 
 hostess is a flake-parts module designed for easy host management.
 
+## Disclaimer!!!
+This module is not yet mature. I am currently giving it a heavy rewrite and using it is not reccommended!
+
 ## Usage.
 
 Simply feed hostess some basic information in your `flake.nix`. After this is done hostess will
