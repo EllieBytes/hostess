@@ -89,7 +89,6 @@ let
     pathsList ++ modsListResolved;
 
   resolveNixosModule = name: resolveInList cfg.nixosModulePaths name;
-  resolveProfiles = name: resolveInList cfg.nixosProfilePaths name;
   resolveHomeModule = name: resolveInList cfg.homeModulePaths name;
 
   namespacedResolver =
@@ -199,6 +198,8 @@ in
       compileNamespacedNixosModuleList
       compileNamespacedHomeModuleList
       compileNamespacedProfileList
+      resolveNixosModule
+      resolveHomeModule
       ;
   };
 }
