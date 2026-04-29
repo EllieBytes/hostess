@@ -252,9 +252,9 @@ in
             (optionals (!isNull cfg.nixosModulePath) [ cfg.nixosModulePath ]) ++ cfg.nixosModulePaths;
 
           homeModulePaths =
-            (optionals (!isNull cfg.homeModulePaths) [ cfg.homeModulePaths ]) ++ cfg.homeModulePaths;
+            (optionals (!isNull cfg.homeModulePath) [ cfg.homeModulePath ]) ++ cfg.homeModulePaths;
 
-          profilePaths = (optionals (!isNull cfg.profilePaths) [ cfg.profilePaths ]) ++ cfg.profilePaths;
+          profilePaths = (optionals (!isNull cfg.profilePath) [ cfg.profilePath ]) ++ cfg.profilePaths;
 
           buildHost =
             hostname:
