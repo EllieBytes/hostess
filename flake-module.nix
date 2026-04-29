@@ -7,26 +7,14 @@
 
 let
   inherit (builtins)
-    mapAttrs
     pathExists
-    readDir
-    tryEval
-    filter
-    length
-    isString
-    isFunction
-    isAttrs
     ;
 
   inherit (lib)
     mkOption
     types
-    submodule
     optional
     optionals
-    attrNames
-    hasAttr
-    filterAttrs
     literalExpression
     genAttrs'
     ;
@@ -233,31 +221,14 @@ in
           inherit (libHostess.hostess)
             subdirs
             safeImport
-            resolveIn
-            tryResolveIn
-            resolveInList
-            compileModulesList
-            compileModulesListInList
             deferModule
             collectCommonNixosModules
-            collectCommonHomeModules
             compileNamespacedNixosModuleList
             compileNamespacedHomeModuleList
             compileNamespacedProfileList
             ;
 
           libHostess = lib.extend (import ./lib { inherit config; });
-
-          useHomeManager = !isNull cfg.home-manager;
-          useDisko = !isNull cfg.disko;
-
-          nixosModulePaths =
-            (optionals (!isNull cfg.nixosModulePath) [ cfg.nixosModulePath ]) ++ cfg.nixosModulePaths;
-
-          homeModulePaths =
-            (optionals (!isNull cfg.homeModulePath) [ cfg.homeModulePath ]) ++ cfg.homeModulePaths;
-
-          profilePaths = (optionals (!isNull cfg.profilePath) [ cfg.profilePath ]) ++ cfg.profilePaths;
 
           buildHost =
             hostname:
@@ -393,7 +364,6 @@ in
                   }
                 )
               ];
-              inherit (builtins) trace;
             in
             cfg.nixpkgs.lib.nixosSystem {
               inherit system pkgs;
