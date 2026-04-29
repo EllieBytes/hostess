@@ -394,7 +394,7 @@ in
                 ++ namedModules
                 ++ namedProfiles
                 ++ homeModule
-                ++ (optional useCommonModule cfg.commonNixosModules)
+                ++ (optionals useCommonModule cfg.commonNixosModules)
                 ++ diskoModules
                 ++ (optional (pathExists (hostDir + "/configuration.nix")) (hostDir + "/configuration.nix"));
 
