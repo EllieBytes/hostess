@@ -34,9 +34,9 @@ let
     let
       base = root + "/${name}";
     in
-    if pathExists "${base}.nix" then
+    if pathExists "${toString base}.nix" then
       "${base}.nix"
-    else if pathExists (base + "/default.nix") then
+    else if pathExists ((toString base) + "/default.nix") then
       (base + "/default.nix")
     else
       throw "Could not resolve ${name} within ${root}";
