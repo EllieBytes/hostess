@@ -395,7 +395,8 @@ in
                 ++ namedProfiles
                 ++ homeModule
                 ++ (optional useCommonModule cfg.commonNixosModules)
-                ++ diskoModules;
+                ++ diskoModules
+                ++ (optional (pathExists (hostDir + "/configuration.nix")) (hostDir + "/configuration.nix"));
 
               specialArgs = {
                 useLibHostess = meta.useLibHostess or true;
