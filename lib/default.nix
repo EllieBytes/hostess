@@ -21,7 +21,7 @@ let
   inherit (prev) filterAttrs;
   cfg = config.hostess;
 
-  subdirs = dir: attrNames (filterAttrs (_: t: t == "directory")) (readDir dir);
+  subdirs = dir: attrNames (filterAttrs (_: t: t == "directory") (readDir dir));
   safeImport =
     path: default:
     if pathExists path then
