@@ -101,7 +101,7 @@ hostess exposes an extended nixpkgs library to every host, allowing hosts to acc
 # ...
 ```
 
-```
+```Nix
 # In hosts/myhost/meta.nix
 
 { ... }:
