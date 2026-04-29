@@ -162,9 +162,9 @@ let
 
   compileNamespacedProfileList = map (resolveNamespacedResolver getProfilePaths);
 
-  collectCommonModulesIn = prev.lists.flatten (
-    map (x: prev.optional (pathExists (x + "/common.nix")) (x + "/common.nix"))
-  );
+  collectCommonModulesIn =
+    xs:
+    prev.lists.flatten (map (x: prev.optional (pathExists (x + "/common.nix")) (x + "/common.nix")) xs);
 
   # Collects all common modules, only uses this namespace!.
   collectCommonNixosModules = collectCommonModulesIn (
