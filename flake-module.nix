@@ -386,17 +386,20 @@ in
                   home-manager.users = homeUserModules;
                 }
               );
+              inherit (builtins) trace;
             in
             cfg.nixpkgs.lib.nixosSystem {
               inherit system pkgs;
               modules =
-                (optionals useCommonModule collectCommonNixosModules)
-                ++ namedModules
-                ++ namedProfiles
-                ++ homeModule
-                ++ (optionals useCommonModule cfg.commonNixosModules)
-                ++ diskoModules
-                ++ (optional (pathExists (hostDir + "/configuration.nix")) (hostDir + "/configuration.nix"));
+                trace "1" (optionals useCommonModule collectCommonNixosModules)
+                ++ trace "2" namedModules
+                ++ trace "3" namedProfiles
+                ++ trace "4" homeModule
+                ++ trace "5" (optionals useCommonModule cfg.commonNixosModules)
+                ++ trace "6" diskoModules
+                ++ trace "7" (
+                  optional (pathExists (hostDir + "/configuration.nix")) (hostDir + "/configuration.nix")
+                );
 
               specialArgs = {
                 useLibHostess = meta.useLibHostess or true;
