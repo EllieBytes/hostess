@@ -391,15 +391,14 @@ in
             cfg.nixpkgs.lib.nixosSystem {
               inherit system pkgs;
               modules =
-                trace "1" (optionals useCommonModule collectCommonNixosModules)
-                ++ trace "${namedModules}" namedModules
-                ++ trace "${namedProfiles}" namedProfiles
-                ++ trace "${homeModule}" homeModule
-                ++ trace "${cfg.commonNixosModules}" (optionals useCommonModule cfg.commonNixosModules)
-                ++ trace "${diskoModules}" diskoModules
-                ++ trace "7" (
-                  optional (pathExists (hostDir + "/configuration.nix")) (hostDir + "/configuration.nix")
-                );
+                #(optionals useCommonModule collectCommonNixosModules)
+                # ++
+                namedModules
+                ++ namedProfiles
+                ++ homeModule
+                ++ (optionals useCommonModule cfg.commonNixosModules)
+                ++ diskoModules
+                ++ (optional (pathExists (hostDir + "/configuration.nix")) (hostDir + "/configuration.nix"));
 
               specialArgs = {
                 useLibHostess = meta.useLibHostess or true;
