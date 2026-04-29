@@ -19,6 +19,10 @@
         imports = [ inputs.devshell.flakeModule ];
         flake.flakeModules.default = ./flake-module.nix;
 
+        systems = [
+          "x86_64-linux"
+        ];
+
         perSystem =
           { pkgs, ... }:
           {
