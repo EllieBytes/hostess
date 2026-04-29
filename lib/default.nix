@@ -32,10 +32,10 @@ let
   resolveIn =
     root: name:
     let
-      base = root + "/${name}";
+      base = root + "/${toString name}";
     in
     if pathExists "${toString base}.nix" then
-      "${base}.nix"
+      "${toString base}.nix"
     else if pathExists ((toString base) + "/default.nix") then
       (base + "/default.nix")
     else
