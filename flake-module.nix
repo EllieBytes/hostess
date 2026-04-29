@@ -370,26 +370,29 @@ in
                 )
               ];
 
-              homeModule = optional homeEnable (
-                { ... }:
-                {
-                  home-manager.useGlobalPkgs = homeConfig.useGlobalPkgs or true;
-                  home-manager.useUserPackages = homeConfig.useUserPackages or true;
-                  home-manager.extraSpecialArgs = {
-                    useLibHostess = homeConfig.useLibHostess or true;
-                  }
-                  // (
-                    if (homeConfig.useLibHostess or true) then
-                      {
-                        lib = libHostess;
-                      }
-                    else
-                      { }
-                  );
+              homeModule = optionals homeEnable [
+                cfg.home-manager.nixosModules.home-manager
+                (
+                  { ... }:
+                  {
+                    home-manager.useGlobalPkgs = homeConfig.useGlobalPkgs or true;
+                    home-manager.useUserPackages = homeConfig.useUserPackages or true;
+                    home-manager.extraSpecialArgs = {
+                      useLibHostess = homeConfig.useLibHostess or true;
+                    }
+                    // (
+                      if (homeConfig.useLibHostess or true) then
+                        {
+                          lib = libHostess;
+                        }
+                      else
+                        { }
+                    );
 
-                  home-manager.users = homeUserModules;
-                }
-              );
+                    home-manager.users = homeUserModules;
+                  }
+                )
+              ];
               inherit (builtins) trace;
             in
             cfg.nixpkgs.lib.nixosSystem {
