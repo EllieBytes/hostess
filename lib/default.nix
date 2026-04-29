@@ -173,7 +173,7 @@ let
 in
 {
   # lib.hostess.<function>
-  final.hostess = {
+  hostess = {
     inherit
       subdirs
       safeImport

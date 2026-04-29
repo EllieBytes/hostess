@@ -227,7 +227,7 @@ in
     {
       flake =
         let
-          inherit (hostessLib)
+          inherit (libHostess)
             subdirs
             safeImport
             resolveIn
@@ -244,7 +244,6 @@ in
             ;
 
           libHostess = lib.extend (import ./lib { inherit config; });
-          hostessLib = libHostess.hostess;
 
           useHomeManager = !isNull cfg.home-manager;
           useDisko = !isNull cfg.disko;
