@@ -65,6 +65,8 @@ let
             Using first module: ${elemAt finals 0}
           '' (elemAt finals 0)
         )
+    else if (length finals < 1) then
+      throw "Nothing found..."
     else
       elemAt finals 0;
 

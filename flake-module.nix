@@ -105,33 +105,36 @@ in
       };
 
       namespaces = mkOption {
-        type = types.attrsOf types.submodule {
-          options = {
-            nixosModulePaths = mkOption {
-              type = types.listOf types.path;
-              default = [ ];
-              description = ''
-                NixOS module search paths in this namespace.
-              '';
-            };
+        default = { };
+        type = types.attrsOf (
+          types.submodule {
+            options = {
+              nixosModulePaths = mkOption {
+                type = types.listOf types.path;
+                default = [ ];
+                description = ''
+                  NixOS module search paths in this namespace.
+                '';
+              };
 
-            homeModulePaths = mkOption {
-              type = types.listOf types.path;
-              default = [ ];
-              description = ''
-                Home Manager module search paths in this namespace.
-              '';
-            };
+              homeModulePaths = mkOption {
+                type = types.listOf types.path;
+                default = [ ];
+                description = ''
+                  Home Manager module search paths in this namespace.
+                '';
+              };
 
-            profilePaths = mkOption {
-              type = types.listOf types.path;
-              default = [ ];
-              description = ''
-                Profile search paths in this namespace.
-              '';
+              profilePaths = mkOption {
+                type = types.listOf types.path;
+                default = [ ];
+                description = ''
+                  Profile search paths in this namespace.
+                '';
+              };
             };
-          };
-        };
+          }
+        );
       };
 
       # Configs.
@@ -327,7 +330,8 @@ in
                       })
                       (
                         {
-                          inherit inputs meta;
+                          inherit config inputs meta;
+                          lib = libHostess;
                         }
                         // cfg.homeMetaSpecialArgs
                       );
