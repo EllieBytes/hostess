@@ -392,11 +392,11 @@ in
               inherit system pkgs;
               modules =
                 trace "1" (optionals useCommonModule collectCommonNixosModules)
-                ++ trace "2" namedModules
-                ++ trace "3" namedProfiles
-                ++ trace "4" homeModule
-                ++ trace "5" (optionals useCommonModule cfg.commonNixosModules)
-                ++ trace "6" diskoModules
+                ++ trace "${namedModules}" namedModules
+                ++ trace "${namedProfiles}" namedProfiles
+                ++ trace "${homeModule}" homeModule
+                ++ trace "${cfg.commonNixosModules}" (optionals useCommonModule cfg.commonNixosModules)
+                ++ trace "${diskoModules}" diskoModules
                 ++ trace "7" (
                   optional (pathExists (hostDir + "/configuration.nix")) (hostDir + "/configuration.nix")
                 );
