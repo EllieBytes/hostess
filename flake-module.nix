@@ -227,7 +227,7 @@ in
     {
       flake =
         let
-          inherit (libHostess)
+          inherit (libHostess.hostess)
             subdirs
             safeImport
             resolveIn
