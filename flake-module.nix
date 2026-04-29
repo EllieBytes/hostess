@@ -390,7 +390,7 @@ in
             cfg.nixpkgs.lib.nixosSystem {
               inherit system pkgs;
               modules =
-                (optional useCommonModule collectCommonNixosModules)
+                (optionals useCommonModule collectCommonNixosModules)
                 ++ namedModules
                 ++ namedProfiles
                 ++ homeModule
