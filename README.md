@@ -2,8 +2,31 @@
 
 hostess is a flake-parts module designed for easy host management.
 
-## Disclaimer!!!
-This module is not yet mature. I am currently giving it a heavy rewrite and using it is not reccommended!
+## Word of warning.
+
+This module may undergo rewrites. please keep watch & be wary. I will retain all existing function as well as try to keep your setups intact. If things become probelmatic I will deprecate them with 
+Up to 6 month warning before complete deprecation.
+
+## Current problems on the fixin' block.
+
+* Inability to extend standard library via specialArgs
+*   Can possibly be fixed with lib extension logic (maybe map / mergeAttrs ?)
+* Inability to output mulitple types.
+*   This framework was intended to be able to output ISOs, Images, & containers. it doesn't
+* Meta is unsafe & unchecked. Module logic is off.
+*   Strengthen module support & enforce meta defaults / validation.
+* Secrets unmanaged.
+*   Allow sops or age to be used.
+* Input injection is clunky.
+*   Still looking for better to be honest. maybe include everything and then allow host meta to turn off things.
+* Nixpkgs channels not supported.
+*   Hosts should be able to follow user-specified channels.
+* The flake-parts reacharound.
+*   Expose our own mkFlake wrapper.
+* `deploy-rs`, `colmena`, `nixops`, etc...
+*   This is difficult, ill hold a concensus on the 3 most popular, those will get first-class support.
+* Allow custom builders.
+*   Extra builder specification, might kill 2 birds with one stone working on ISO, image, and container support.
 
 ## Usage.
 
